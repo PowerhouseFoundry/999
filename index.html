@@ -800,18 +800,15 @@ serviceIconImg.src = src;
     if (!clean) return;
 
     // Prevent the mic from "hearing" the operator voice (feedback loop)
-    try { stopListening(); } catch(e){}
+  
 
     var u = new SpeechSynthesisUtterance(clean);
     u.lang = (chosenVoice && chosenVoice.lang) ? chosenVoice.lang : "en-GB";
     if (chosenVoice) u.voice = chosenVoice;
     u.rate = 0.95; u.pitch = 1.0; u.volume = 1.0;
 
-    u.onend = function(){
-      setTimeout(function(){
-        try { startListening(); } catch(e){}
-      }, 350);
-    };
+ u.onend = function(){};
+
 
     window.speechSynthesis.cancel();
     window.speechSynthesis.speak(u);
@@ -932,7 +929,8 @@ var reServiceFire = /\b(fire|fyre|fire\s*service|fire\s*brigade|firefighters)\b/
   function ask(line){
     // Block recognition briefly so we don't immediately capture the operator audio
     // or short noises and skip ahead.
-    canAcceptUntil = new Date().getTime() + 1200;
+   canAcceptUntil = new Date().getTime() + 400;
+
     speak(line);
   }
 
@@ -988,7 +986,14 @@ var reServiceFire = /\b(fire|fyre|fire\s*service|fire\s*brigade|firefighters)\b/
 
     var need = currentScenario.service;
 
-    if (state === STATE.BT_SERVICE){
+   if (state === STATE.BT_SERVICE){
+  // Accept very short answers immediately
+  if (text.length <= 12) {
+    if (reServiceAmb.test(text)) need = "ambulance";
+    if (reServicePol.test(text)) need = "police";
+    if (reServiceFire.test(text)) need = "fire";
+  }
+
       var ok = false;
       if (need === "ambulance" && reServiceAmb.test(text)) ok = true;
       if (need === "police" && reServicePol.test(text)) ok = true;
