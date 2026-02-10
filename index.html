@@ -921,9 +921,10 @@ serviceIconImg.src = src;
   // Don't accept speech answers until this timestamp (ms)
   var canAcceptUntil = 0;
 
-  var reServiceAmb = /\b(ambulance|ambulance service|medical|medic|paramedic|doctor)\b/i;
-  var reServicePol = /\b(police|police service|officer|cops)\b/i;
-  var reServiceFire = /\b(fire|fire service|fire brigade|firefighters)\b/i;
+var reServiceAmb = /\b(ambulance|ambulan[cs]e|ambalance|medical|medic|paramedic)\b/i;
+var reServicePol = /\b(police|po[ -]?lice|poli[sc]e|cops|officer)\b/i;
+var reServiceFire = /\b(fire|fyre|fire\s*service|fire\s*brigade|firefighters)\b/i;
+
 
   var reYes = /\b(yes|yeah|yep|yup|ya|correct|that's right|right|affirmative|sure|okay|ok)\b/i;
   var reNo  = /\b(no|nope|nah|negative|not)\b/i;
@@ -997,9 +998,11 @@ serviceIconImg.src = src;
         if (need === "ambulance"){ state = STATE.AMB_WHAT; ask("Ambulance service. Tell me exactly what happened."); }
         else if (need === "police"){ state = STATE.POL_WHAT; ask("Police. Tell me exactly what's happening."); }
         else { state = STATE.FIRE_WHAT; ask("Fire service. Tell me where the fire is."); }
-      } else {
-        ask("Emergency. Which service do you require? Fire, Police or Ambulance?");
-      }
+     } else {
+  // If speech recognition is unreliable, repeat more clearly
+  ask("Please say one word: Fire, Police, or Ambulance.");
+}
+
       return;
     }
 
