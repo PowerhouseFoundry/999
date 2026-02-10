@@ -33,17 +33,21 @@
       overflow: hidden;
 
     }
-  .app{
+.app{
   width: min(1100px, 98vw);
   display:grid;
   grid-template-columns: 380px 1fr;
   gap:24px;
   align-items:start;
+}
 
-  /* NEW: scale-to-fit */
+/* NEW: scaling wrapper (do NOT scale .app itself) */
+.app-wrap{
   transform: scale(var(--fitScale));
   transform-origin: top center;
+  will-change: transform;
 }
+
 
     .header {
       grid-column:1 / -1;
@@ -533,7 +537,9 @@ body{
 </style>
 </head>
 <body>
+<div class="app-wrap">
   <div class="app">
+
     <div class="header">
       <div>
         <h1>999 Emergency Call Simulator</h1>
@@ -616,7 +622,9 @@ body{
         <div class="note">Tip: Press “Read Scenario” if reading is difficult. Then dial 999 and follow the call.</div>
       </div>
     </div>
-  </div>
+   </div> <!-- end .app -->
+</div> <!-- end .app-wrap -->
+
 
 
 <script>
@@ -1052,7 +1060,8 @@ serviceIconImg.src = src;
 <script>
 (function(){
   function fitApp(){
-    var app = document.querySelector(".app");
+    var app = document.querySelector(".app-wrap");
+
     if(!app) return;
 
     // Temporarily remove scaling to measure the natural size
